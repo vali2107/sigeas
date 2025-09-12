@@ -1,0 +1,79 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    font-family: "Julius Sans One", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    color: white;
+    margin-bottom: 4%;
+}
+
+P {
+    font-family: "Julius Sans One", sans-serif;
+    font-weight: 800;
+    font-style: normal;
+    color: white;
+    font-size: xx-large;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2%;
+    background-color: #647C90;
+}
+
+body{
+    background-color: #FCFAF0;
+}
+
+label {
+    font-family: "Julius Sans One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    margin-bottom: 1%;
+    color: white; 
+}
+
+button {
+    font-family: "Julius Sans One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    margin-top: 6%;
+    width: 20%;
+    color: white;
+    background-color: #4E4F50;
+    border-radius: 20px;
+    padding: 2%;
+}
+
+#container_form{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5%;
+}
+
+#login_form{
+    display: flex;
+    padding: 2%;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 20px;
+    width: 25%;
+    height: 100%;
+    background-color: #647C90;
+}
+
+input{
+    border-radius: 20px;
+    width: 50%;
+    padding: 2%;
+    margin-bottom: 2%;
+}
+
