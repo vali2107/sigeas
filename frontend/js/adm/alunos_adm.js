@@ -77,7 +77,7 @@ async function listarAlunos() {
 }
 
 // edita o aluno
-async function editarTurma(id) {
+async function editarAluno(id) {
     const nome = prompt("Novo nome: ")
     const email = prompt("Novo email: ")
     const senha = prompt("Novo senha: ")

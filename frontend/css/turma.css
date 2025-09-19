@@ -3,14 +3,6 @@
     padding: 0;
 }
 
-P {
-    font-family: "Julius Sans One", sans-serif;
-    font-weight: 800;
-    font-style: normal;
-    color: white;
-    font-size: xx-large;
-}
-
 header {
     display: flex;
     align-items: center;
@@ -23,10 +15,16 @@ body{
     background-color: #FCFAF0;
 }
 
-#inserir_turma_form {
+
+
+
+
+#inserir_aluno_form {
     display: none;
     padding: 1%;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     border-radius: 20px;
     width: 15%;
     height: 40%;
@@ -35,12 +33,13 @@ body{
 
 input{
     border-radius: 20px;
-    width: 50%;
+    width: 90%;
     padding: 2%;
+    margin-bottom: 5%;
     border: none;
 }
 
-#inserir_turma_botao {
+#inserir_aluno_botao {
     font-family: "Julius Sans One", sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -53,19 +52,6 @@ input{
 }
 
 #fechar_add{
-    font-family: "Julius Sans One", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-    color: white;
-    background-color: #647C90;
-    border-radius: 20px;
-    padding: 1%;
-    border: none;
-    justify-content: end;
-    align-self: flex-end;
-}
-
-#fechar_addP{
     font-family: "Julius Sans One", sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -118,11 +104,6 @@ h1{
     border: none;
 }
 
-#abrir_addP{
-    padding: 0.5%;
-    border-radius: 20px;
-    border: none;
-}
 
 .item {
     display: flex;
@@ -151,27 +132,4 @@ h1{
 }
 .acoes i {
     color: #4E4F50;
-}
-
-#inserir_professor_form {
-    display: none;
-    padding: 1%;
-    flex-direction: column;
-    border-radius: 20px;
-    width: 40%;
-    height: 40%;
-    background-color: #647C90;
-}
-
-#inserir_professor_botao {
-    font-family: "Julius Sans One", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-    width: 45%;
-    color: white;
-    background-color: #4E4F50;
-    border-radius: 20px;
-    padding: 0.5%;
-    border: none;
-    border-radius: 20px;
 }

@@ -18,11 +18,13 @@ if (html) {
         </div>
         <div id="alunos_tudo"></div>
         <form id="inserir_aluno_form">
+            <button id="fechar_add" onclick="fecharAdd()">x</button>
+
             <input type="text" id="nome" placeholder="Nome">
             <input type="text" id="email" placeholder="E-Mail">
             <input type="text" id="senha" placeholder="Senha">
-            <button id="inserir_turma_botao" onclick="inserirAluno(event)">Inserir</button>
-            <button id="fechar_add" onclick="fecharAdd()">x</button>
+            <button id="inserir_aluno_botao" onclick="inserirAluno(event)">Inserir</button>
+            
         </form>
     `
 }

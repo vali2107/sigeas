@@ -143,8 +143,6 @@ app.delete('/turmas/:id', (req, res) => {
     })
 });
 
-
-
 // cadastrar aluno
 app.post('/alunos/:id_turma', (req, res) => {
     let params = Array(
@@ -258,6 +256,212 @@ app.delete('/alunos/:id', (req, res) => {
                 .json({
                     success: false,
                     message: "Erro ao deletar aluno",
+                    data: err
+                })
+        }
+    })
+});
+
+// cadastrar professor
+app.post('/professores', (req, res) => {
+    let params = Array(
+        req.body.nome,
+        req.body.email,
+        req.body.senha,
+        req.body.turmas
+    );
+
+    let query = "INSERT INTO usuarios(nome, email, senha, tipo_conta, id_turma) VALUES(?, ?, ?, 'professor', ?);";
+    connection.query(query, params, (err, results) => {
+        if (results) {
+            res
+                .status(201)
+                .json({
+                    success: true,
+                    message: "Professor adicionado com sucesso",
+                    data: results
+                })
+        } else {
+            res
+                .status(400)
+                .json({
+                    success: false,
+                    message: "Erro ao adicionar professor",
+                    data: err
+                })
+        }
+    })
+});
+
+// listar professores
+app.get('/professores', (req, res) => {
+    const query = "SELECT * FROM usuarios WHERE tipo_conta = 'professor' ";
+
+    connection.query(query, (err, results) => {
+        if (results) {
+            res
+                .status(200)
+                .json({
+                    success: true,
+                    message: "Professores carregadas com sucesso",
+                    data: results
+                })
+        } else {
+            res
+                .status(400)
+                .json({
+                    success: false,
+                    message: "Erro ao carregar professores",
+                    data: err
+                })
+        }
+    })
+});
+
+// lista turmas daquele professor
+app.get('/turmas/:id', (req, res) => {
+    let params = Array(
+        req.params.id
+    );
+    
+    const query = "SELECT t.* FROM turmas t JOIN usuarios u ON u.id_turma = t.id WHERE u.tipo_conta = 'professor' AND u.id = ?";
+
+    connection.query(query, params, (err, results) => {
+        if (results) {
+            res
+                .status(200)
+                .json({
+                    success: true,
+                    message: "Turmas carregadas com sucesso",
+                    data: results
+                })
+        } else {
+            res
+                .status(400)
+                .json({
+                    success: false,
+                    message: "Erro ao carregar turmas",
+                    data: err
+                })
+        }
+    })
+});
+
+// editar professores
+app.put('/professores/:id', (req, res) => {
+    let params = Array(
+        req.body.nome,
+        req.body.email,
+        req.body.senha,
+        req.params.id
+    )
+    let query = "UPDATE usuarios SET nome=?, email=?, senha=? WHERE id = ?";
+
+    connection.query(query, params, (err, results) => {
+        if (results) {
+            res
+                .status(200)
+                .json({
+                    success: true,
+                    message: "Professor editado com sucesso",
+                    data: results
+                })
+        } else {
+            res
+                .status(400)
+                .json({
+                    success: false,
+                    message: "Erro ao editar professor",
+                    data: err
+                })
+        }
+    })
+});
+
+// deletar professores
+app.delete('/professor/:id', (req, res) => {
+    let params = Array(
+        req.params.id
+    )
+    let query = "DELETE FROM usuarios WHERE id = ?";
+
+    connection.query(query, params, (err, results) => {
+        if (results) {
+            res
+                .status(200)
+                .json({
+                    success: true,
+                    message: "Professor deletado com sucesso",
+                    data: results
+                })
+        } else {
+            res
+                .status(400)
+                .json({
+                    success: false,
+                    message: "Erro ao deletar professor",
+                    data: err
+                })
+        }
+    })
+});
+
+// adicionar notas
+app.post('/nota/:id', (req, res) => {
+    let params = Array(
+        req.body.nome
+    );
+
+    let query = "INSERT INTO nota(id_aluno, id_turma, id_professor, trimestre) VALUES(?);";
+    connection.query(query, params, (err, results) => {
+        if (results) {
+            res
+                .status(201)
+                .json({
+                    success: true,
+                    message: "Turma adicionada com sucesso",
+                    data: results
+                })
+        } else {
+            res
+                .status(400)
+                .json({
+                    success: false,
+                    message: "Erro ao adicionar turma",
+                    data: err
+                })
+        }
+    })
+});
+
+// editar nota
+
+// adicionar chamada
+
+
+// listar informações do aluno
+app.get('/turmaAluno/:id', (req, res) => {
+    let params = Array(
+        req.params.id
+    );
+    
+    const query = "SELECT u.*, t.nome AS turma_nome FROM usuarios u JOIN turmas t ON u.id_turma = t.id WHERE u.tipo_conta = 'aluno' and u.id = ?";
+
+    connection.query(query, params, (err, results) => {
+        if (results) {
+            res
+                .status(200)
+                .json({
+                    success: true,
+                    message: "Informações carregadas com sucesso",
+                    data: results
+                })
+        } else {
+            res
+                .status(400)
+                .json({
+                    success: false,
+                    message: "Erro ao carregar informações",
                     data: err
                 })
         }

@@ -2,14 +2,12 @@
 async function abrirAdd() {
     document.getElementById("inserir_turma_form").style.display = "flex";
     document.getElementById("abrir_add").style.display = "none"
-    document.getElementById("abrir_reordenar").style.display = "none"
 }
 
 // fecha o form de adicionar
 async function fecharAdd() {
     document.getElementById("inserir_turma_form").style.display = "none";
     document.getElementById("abrir_add").style.display = "block"
-    document.getElementById("abrir_reordenar").style.display = "block"
 }
 
 // insere a turma no banco
@@ -58,6 +56,7 @@ async function listarTurmas() {
             let card = document.createElement('div')
             card.classList.add('item')
             card.innerHTML += `
+                <p class="titulo">${turma.id}.</p>
                 <p class="titulo">${turma.nome}</p>
                 <div class="acoes">
                     <button class="abrir_turma_botao" onclick="abrirTurma(${turma.id}, '${turma.nome}')">Ver</button>

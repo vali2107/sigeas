@@ -17,8 +17,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Julius+Sans+One&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&display=swap"
         rel="stylesheet">
-    <!-- <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="./css/modulos.css"> -->
+    <link rel="stylesheet" href="css/adm.css">
 </head>
 
 <body>
@@ -35,16 +34,36 @@
         <div id="container_form">
 
             <form id="inserir_turma_form">
-                <div id="container_fechar">
-                    <button id="fechar_add" onclick="fecharAdd()">x</button>
-                </div>
+                <button id="fechar_add" onclick="fecharAdd()">x</button>
 
                 <div id="container_campos">
                     <input type="text" id="nome" placeholder="Nome">
 
-                <button id="inserir_turma_botao" onclick="inserirTurma(event)">Inserir</button>
+                    <button id="inserir_turma_botao" onclick="inserirTurma(event)">Inserir</button>
                 </div>
-                
+
+
+            </form>
+        </div>
+
+        <div id="topo">
+            <h1>Professores</h1>
+            <button id="abrir_addP" onclick="abrirAddP()">Adicionar professor</button>
+        </div>
+        <div id="professores"></div>
+        <div id="container_form">
+
+            <form id="inserir_professor_form">
+                <button id="fechar_addP" onclick="fecharAddP()">x</button>
+
+                <div id="container_campos">
+                    <input type="text" id="nomeP" placeholder="Nome">
+                    <input type="email" id="emailP" placeholder="E-mail">
+                    <input type="password" id="senhaP" placeholder="Senha">
+                    <input type="text" id="turmas" placeholder="Turmas">
+                    <button id="inserir_professor_botao" onclick="inserirProfessores(event)">Inserir</button>
+                </div>
+
 
             </form>
         </div>
@@ -55,6 +74,7 @@
 
     <script src="./js/adm/abrir_turma_adm.js"></script>
     <script src="./js/adm/turmas_adm.js"></script>
+    <script src="./js/adm/professores_adm.js"></script>
 </body>
 
 </html>

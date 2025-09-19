@@ -1,0 +1,24 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+P {
+    font-family: "Julius Sans One", sans-serif;
+    font-weight: 800;
+    font-style: normal;
+    color: white;
+    font-size: xx-large;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2%;
+    background-color: #647C90;
+}
+
+body{
+    background-color: #FCFAF0;
+}

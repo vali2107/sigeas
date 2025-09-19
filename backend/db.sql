@@ -13,10 +13,8 @@ CREATE TABLE usuarios (
     email varchar(255),
     senha varchar(255),
     tipo_conta varchar(255),
-    id_turma int,
-    data_criacao timestamp default current_timestamp,
-    
-    foreign key (id_turma) references turmas(id) on delete cascade
+    id_turma varchar(255),
+    data_criacao timestamp default current_timestamp
 );
 
 CREATE TABLE presenca (
@@ -46,3 +44,6 @@ CREATE TABLE nota (
     foreign key (id_turma) references turmas(id) on delete cascade,
     foreign key (id_professor) references usuarios(id) on delete cascade
 );
+
+
+insert into usuarios(email, senha, tipo_conta) values ("adm@gmail.com", "teste", "adm");
