@@ -1,10 +1,11 @@
 const informacoesUsuario = localStorage.getItem('informacoes');
-const usuario = JSON.parse(informacoesUsuario);
+const usuario = JSON.parse(informacoesUsuario); 
 const API = 'http://localhost:3006';
 
 function ymdToBr(ymd) {
   if (!ymd) return '';
-  const [y, m, d] = String(ymd).split('-');
+  const onlyDate = String(ymd).split('T')[0];
+  const [y, m, d] = onlyDate.split('-');
   return `${d}/${m}/${y}`;
 }
 
@@ -14,23 +15,27 @@ async function listarTurma() {
     headers: { "Content-Type": "application/json" }
   });
 
+  if (!response.ok) {
+    const txt = await response.text();
+    alert(`Erro ${response.status} ao carregar dados do aluno: ${txt}`);
+    return;
+  }
+
   const results = await response.json();
 
   if (results.success) {
-    let productData = results.data;
-    let html = document.getElementById('informacoes_aluno');
+    const productData = results.data;
+    const html = document.getElementById('informacoes_aluno');
     html.innerHTML = '';
 
     for (const aluno of productData) {
-      let card = document.createElement('div');
+      const card = document.createElement('div');
       card.classList.add('item');
 
-      card.innerHTML += `
-        <h1 class="titulo">${aluno.nome} - ${aluno.turma_nome}</h1>
-        <div id="resumo_${aluno.id}" class="resumo"></div>
+      card.innerHTML = `
+        <h1 class="titulo topo">${aluno.nome} - ${aluno.turma_nome}</h1>
         <div id="historico_${aluno.id}" class="historico"></div>
       `;
-
       html.appendChild(card);
 
       await listarHistoricoAluno(aluno.id, aluno.id_turma);
@@ -47,32 +52,21 @@ async function listarHistoricoAluno(idAluno, idTurma) {
     headers: { "Content-Type": "application/json" }
   });
 
-  const results = await response.json();
+  const historicoDiv = document.getElementById(`historico_${idAluno}`);
 
+  if (!response.ok) {
+    const txt = await response.text();
+    historicoDiv.innerHTML = `<p style="color:red;">Erro ${response.status}: ${txt}</p>`;
+    return;
+  }
+
+  const results = await response.json();
   if (!results.success) {
-    const h = document.getElementById(`historico_${idAluno}`);
-    h.innerHTML = `<p style="color:red;">${results.message || 'Erro ao carregar histórico'}</p>`;
+    historicoDiv.innerHTML = `<p style="color:red;">${results.message || 'Erro ao carregar histórico'}</p>`;
     return;
   }
 
   const historico = results.data || [];
-
-  let presentes = 0, faltas = 0;
-  historico.forEach(l => Number(l.presenca) === 1 ? presentes++ : faltas++);
-  const total = presentes + faltas;
-  const perc = total > 0 ? ((presentes / total) * 100).toFixed(1) : '0.0';
-
-  const resumoDiv = document.getElementById(`resumo_${idAluno}`);
-  resumoDiv.innerHTML = `
-    <div class="resumo-grid">
-      <div class="resumo-item">Total de aulas: ${total}</div>
-      <div class="resumo-item">Presentes: ${presentes}</div>
-      <div class="resumo-item">Faltas: ${faltas}</div>
-      <div class="resumo-item">Presença: ${perc}%</div>
-    </div>
-  `;
-
-  const historicoDiv = document.getElementById(`historico_${idAluno}`);
   if (historico.length === 0) {
     historicoDiv.innerHTML = `<p>Sem registros de presença para exibir.</p>`;
     return;
@@ -92,7 +86,7 @@ async function listarHistoricoAluno(idAluno, idTurma) {
   }).join('');
 
   historicoDiv.innerHTML = `
-    <h2>Minhas presenças</h2>
+    <h2>Presenças</h2>
     <table class="tabela-presencas">
       <thead>
         <tr><th>Data</th><th>Status</th></tr>

@@ -3,7 +3,7 @@
     padding: 0;
 }
 
-P {
+header P {
     font-family: "Julius Sans One", sans-serif;
     font-weight: 800;
     font-style: normal;
@@ -21,4 +21,54 @@ header {
 
 body{
     background-color: #FCFAF0;
+}
+
+.item { padding:16px; background:#fff; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,.06); margin:16px 0; }
+.titulo.topo { margin:0 0 12px 0; font-size:20px; }
+
+.tabela-presencas { width:100%; border-collapse:collapse; }
+.tabela-presencas th, .tabela-presencas td { padding:10px 8px; border-bottom:1px solid #eee; text-align:left; }
+
+.tag { padding:4px 10px; border-radius:999px; border:1px solid #ccc; font-size:12px; }
+.tag.presente { background:#e7ffe7; border-color:#b9e3b9; }
+.tag.falta { background:#ffe7e7; border-color:#f1b8b8; }
+
+
+
+
+
+
+
+#notas {
+    display: none;
+    flex-direction: column;
+    padding: 3% 0;
+    background-color: white;
+    width: 100%;
+    margin-bottom: 5%;
+}
+#notas div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0 7%;
+}
+.tri1_media, .tri2_media, .tri3_media {
+    font-weight: bold;
+}
+#notas div div {
+    width: 15%;
+    height: 8vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+#notas div div p {
+    color: black;
+    font-size: 18px;
+}
+
+#notas h2 {
+    margin: 0 0 3% 4% ;
 }

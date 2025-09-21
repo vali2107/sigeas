@@ -16,19 +16,21 @@ app.post('/login', (req, res) => {
     );
     const query = "SELECT * FROM usuarios WHERE email = ? AND senha = ?;"
     connection.query(query, params, (err, results) => {
-        if(results.length > 0) {
+        if (results.length > 0) {
             res
-            .status(200)
-            .json({
-                success: true, 
-                message: "Login realizado com sucesso", 
-                data: results[0]})
+                .status(200)
+                .json({
+                    success: true,
+                    message: "Login realizado com sucesso",
+                    data: results[0]
+                })
         } else {
             res
-            .status(400)
-            .json({
-                success: false, 
-                message: "Nome ou senha incorretos"})
+                .status(400)
+                .json({
+                    success: false,
+                    message: "Nome ou senha incorretos"
+                })
         }
     })
 })
@@ -323,7 +325,7 @@ app.get('/turmas/:id', (req, res) => {
     let params = Array(
         req.params.id
     );
-    
+
     const query = "SELECT t.* FROM turmas t JOIN usuarios u ON u.id_turma = t.id WHERE u.tipo_conta = 'professor' AND u.id = ?";
 
     connection.query(query, params, (err, results) => {
@@ -350,12 +352,13 @@ app.get('/turmas/:id', (req, res) => {
 // editar professores
 app.put('/professores/:id', (req, res) => {
     let params = Array(
-        req.body.nome,
-        req.body.email,
-        req.body.senha,
+        req.body.nome || null,
+        req.body.email || null,
+        req.body.senha || null,
+        req.body.id_turma || null,
         req.params.id
     )
-    let query = "UPDATE usuarios SET nome=?, email=?, senha=? WHERE id = ?";
+    let query = "UPDATE usuarios SET nome=COALESCE(?, nome), email=COALESCE(?, email), senha=COALESCE(?, senha), id_turma=COALESCE(?, id_turma) WHERE id = ?";
 
     connection.query(query, params, (err, results) => {
         if (results) {
@@ -406,37 +409,185 @@ app.delete('/professor/:id', (req, res) => {
     })
 });
 
-// adicionar notas
-app.post('/nota/:id', (req, res) => {
-    let params = Array(
-        req.body.nome
-    );
+// adicionar nota
+app.post('/nota', (req, res) => {
 
-    let query = "INSERT INTO nota(id_aluno, id_turma, id_professor, trimestre) VALUES(?);";
-    connection.query(query, params, (err, results) => {
-        if (results) {
-            res
-                .status(201)
-                .json({
-                    success: true,
-                    message: "Turma adicionada com sucesso",
-                    data: results
-                })
+    const { id_aluno, trimestre, campo, valor } = req.body;
+
+    const checkQuery = "SELECT * FROM nota WHERE id_aluno = ? AND trimestre = ?";
+    connection.query(checkQuery, [id_aluno, trimestre], (err, results) => {
+        if (err) return res.status(500).json({ error: err });
+
+        if (results.length > 0) {
+            // Atualiza
+            const updateQuery = `UPDATE nota SET ${campo} = ? WHERE id_aluno = ? AND trimestre = ?`;
+            connection.query(updateQuery, [valor, id_aluno, trimestre], (err2) => {
+                if (err2) return res.status(500).json({ error: err2 });
+                res.json({ success: true, action: "updated" });
+            });
         } else {
-            res
-                .status(400)
-                .json({
-                    success: false,
-                    message: "Erro ao adicionar turma",
-                    data: err
-                })
+            // Insere
+            const insertQuery = `INSERT INTO nota (id_aluno, trimestre, ${campo}) VALUES (?, ?, ?)`;
+            connection.query(insertQuery, [id_aluno, trimestre, valor], (err3) => {
+                if (err3) return res.status(500).json({ error: err3 });
+                res.json({ success: true, action: "inserted" });
+            });
         }
-    })
+    });
+});
+
+
+// load notas 
+app.get('/nota/:id_aluno', (req, res) => {
+    const { id_aluno } = req.params;
+
+    const query = "SELECT * FROM nota WHERE id_aluno=?";
+    connection.query(query, [id_aluno], (err, results) => {
+        if (err) {
+            return res.status(500).json({
+                success: false,
+                message: "Erro ao carregar notas",
+                data: err
+            });
+        }
+
+        if (results.length === 0) {
+            return res.status(200).json({
+                success: true,
+                message: "Nenhuma nota encontrada",
+                data: []
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Notas carregadas com sucesso",
+            data: results
+        });
+    });
 });
 
 // editar nota
+app.put('/nota', (req, res) => {
+    const campo = req.body.campo;
+    const valor = req.body.valor;
+    const id_aluno = req.body.id_aluno;
+    const trimestre = req.body.trimestre;
 
-// adicionar chamada
+    let query = `UPDATE nota SET ${campo} = ? WHERE id_aluno = ? AND trimestre = ?`;
+
+    let params = [valor, id_aluno, trimestre];
+
+    connection.query(query, params, (err, results) => {
+        if (results) {
+            res.status(200).json({
+                success: true,
+                message: "Nota editada com sucesso",
+                data: results
+            });
+        } else {
+            res.status(400).json({
+                success: false,
+                message: "Erro ao editar nota",
+                data: err
+            });
+        }
+    });
+});
+
+
+
+// GET /presenca?turmaId=1&data=AAAA-MM-DD
+app.get('/presenca', (req, res) => {
+  const { turmaId, data } = req.query;
+
+  const query = `
+    SELECT 
+      u.id AS id_aluno,
+      u.nome,
+      u.email,
+      COALESCE(p.presenca, 0) AS presenca,
+      CASE WHEN p.id IS NULL THEN 0 ELSE 1 END AS tem_registro
+    FROM usuarios u
+    LEFT JOIN presenca p
+      ON p.id_aluno = u.id
+     AND p.id_turma = ?
+     AND p.data = ?
+    WHERE u.tipo_conta = 'aluno' 
+      AND u.id_turma = ?
+    ORDER BY u.nome ASC;
+  `;
+
+  connection.query(query, [turmaId, data, turmaId], (err, results) => {
+    if (err) {
+      return res.status(400).json({ success: false, message: 'Erro ao carregar presença', data: err });
+    }
+    res.status(200).json({ success: true, message: 'Presenças carregadas', data: results });
+  });
+});
+
+app.post('/presenca/set', (req, res) => {
+  const { id_aluno, id_turma, id_professor, data, presenca } = req.body;
+
+  const params = [
+    id_aluno, id_turma, id_professor || null, data, presenca ? 1 : 0,
+    id_professor || null, presenca ? 1 : 0
+  ];
+
+  const query = `
+    INSERT INTO presenca (id_aluno, id_turma, id_professor, data, presenca)
+    VALUES (?, ?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE
+      id_professor = ?,
+      presenca = ?;
+  `;
+
+  connection.query(query, params, (err, results) => {
+    if (err) {
+      return res.status(400).json({ success: false, message: 'Erro ao registrar presença', data: err });
+    }
+    res.status(200).json({ success: true, message: 'Presença atualizada', data: results });
+  });
+});
+
+app.post('/presenca/gerar', (req, res) => {
+  const { id_turma, id_professor, data } = req.body;
+
+  if (!id_turma || !data) {
+    return res.status(400).json({ success: false, message: 'id_turma e data são obrigatórios' });
+  }
+
+  const query = `
+    INSERT INTO presenca (id_aluno, id_turma, id_professor, data, presenca)
+    SELECT 
+      u.id       AS id_aluno,
+      ?          AS id_turma,
+      ?          AS id_professor,
+      ?          AS data,
+      0          AS presenca
+    FROM usuarios u
+    LEFT JOIN presenca p
+      ON p.id_aluno = u.id
+     AND p.id_turma = ?
+     AND p.data = ?
+    WHERE u.tipo_conta = 'aluno'
+      AND u.id_turma = ?
+      AND p.id IS NULL;
+  `;
+
+  const params = [id_turma, (id_professor || null), data, id_turma, data, id_turma];
+
+  connection.query(query, params, (err, results) => {
+    if (err) {
+      return res.status(400).json({ success: false, message: 'Erro ao gerar presenças do dia', data: err });
+    }
+    res.status(200).json({
+      success: true,
+      message: 'Presenças do dia geradas (falta=0) para alunos sem registro',
+      data: { inserted: results.affectedRows }
+    });
+  });
+});
 
 
 // listar informações do aluno
@@ -444,7 +595,7 @@ app.get('/turmaAluno/:id', (req, res) => {
     let params = Array(
         req.params.id
     );
-    
+
     const query = "SELECT u.*, t.nome AS turma_nome FROM usuarios u JOIN turmas t ON u.id_turma = t.id WHERE u.tipo_conta = 'aluno' and u.id = ?";
 
     connection.query(query, params, (err, results) => {
@@ -466,6 +617,45 @@ app.get('/turmaAluno/:id', (req, res) => {
                 })
         }
     })
+});
+
+// pegar as faltas/presenças do aluno
+app.get('/presencaAluno/:id', (req, res) => {
+  const { turmaId, de, ate } = req.query;
+
+  let where = 'p.id_aluno = ?';
+  const params = [req.params.id];
+
+  if (turmaId) { where += ' AND p.id_turma = ?'; params.push(turmaId); }
+  if (de)      { where += ' AND p.data >= ?';    params.push(de); }
+  if (ate)     { where += ' AND p.data <= ?';    params.push(ate); }
+
+  const query = `
+    SELECT 
+      p.data,
+      p.presenca,
+      p.id_turma,
+      t.nome AS turma_nome
+    FROM presenca p
+    JOIN turmas t ON t.id = p.id_turma
+    WHERE ${where}
+    ORDER BY p.data DESC;
+  `;
+
+  connection.query(query, params, (err, results) => {
+    if (err) {
+      return res.status(400).json({
+        success: false,
+        message: 'Erro ao carregar histórico do aluno',
+        data: err
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: 'Histórico carregado',
+      data: results
+    });
+  });
 });
 
 app.listen(port, () => console.log(`Rodando na porta ${port}`))

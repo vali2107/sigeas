@@ -17,7 +17,7 @@ async function inserirProfessores(event) {
     const nome = document.getElementById("nomeP").value
     const email = document.getElementById("emailP").value
     const senha = document.getElementById("senhaP").value
-    const turmas = document.getElementById("turmas").value
+    const turma = document.getElementById("turma").value
 
     const data = {nome, email, senha, turma}
 
@@ -81,8 +81,11 @@ async function listarProfessores() {
 // edita professor
 async function editarProfessores(id) {
     const nome = prompt("Novo nome: ")
+    const email = prompt("Novo email: ")
+    const senha = prompt("Nova senha: ")
+    const turma = prompt("Nova turma: ")
 
-    const data = {nome}
+    const data = {nome, email, senha, turma}
 
     const response = await fetch(`http://localhost:3006/professores/${id}`, {
         method: 'PUT',
@@ -100,7 +103,7 @@ async function editarProfessores(id) {
     }
 }
 
-// deleta a aula
+// deleta o professor
 async function deletarProfessores(id) {
     const confirmacao = confirm('Tem certeza?')
 

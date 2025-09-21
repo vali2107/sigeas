@@ -100,7 +100,7 @@ async function editarAluno(id) {
     }
 }
 
-// deleta a aula
+// deleta o aluno
 async function deletarAluno(id) {
     const confirmacao = confirm('Tem certeza?')
 

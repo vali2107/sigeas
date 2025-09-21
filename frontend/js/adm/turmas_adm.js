@@ -72,7 +72,7 @@ async function listarTurmas() {
     }
 }
 
-// edita aula
+// edita turma
 async function editarTurma(id) {
     const nome = prompt("Novo nome: ")
 
@@ -88,13 +88,13 @@ async function editarTurma(id) {
 
     if (results.success) {
         alert(results.message)
-        listarAulas()
+        listarTurmas()
     } else {
         alert(results.message)
     }
 }
 
-// deleta a aula
+// deleta a turma
 async function deletarTurma(id) {
     const confirmacao = confirm('Tem certeza?')
 

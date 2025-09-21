@@ -3,6 +3,14 @@
     padding: 0;
 }
 
+header p {
+    font-family: "Julius Sans One", sans-serif;
+    font-weight: 800;
+    font-style: normal;
+    color: white;
+    font-size: xx-large;
+}
+
 header {
     display: flex;
     align-items: center;
@@ -132,4 +140,65 @@ h1{
 }
 .acoes i {
     color: #4E4F50;
+}
+
+
+
+#notas {
+    display: none;
+    flex-direction: column;
+    padding: 3%;
+    background-color: white;
+    width: 50%;
+    border-radius: 20px;
+    border: none;
+    margin: auto;
+    margin-bottom: 5%;
+}
+#notas div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#notas div div {
+    width: 25%;
+    height: 8vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+#abrir_presenca {
+    font-family: "Julius Sans One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    width: 20%;
+    color: white;
+    background-color: #4E4F50;
+    border-radius: 20px;
+    padding: 1%;
+    border: none;
+}
+
+#abrir_notas{
+    padding: 10%;
+    border-radius: 20px;
+    border: none;
+}
+
+.nome_nota {
+    font-weight: bold;
+}
+
+#adicionarNota {
+    font-family: "Julius Sans One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: white;
+    background-color: #4E4F50;
+    border-radius: 20px;
+    padding: 5%;
+    border: none;
 }
