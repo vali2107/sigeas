@@ -23,11 +23,13 @@ CREATE TABLE presenca (
     id_turma int,
     id_professor int,
     data date,
-    presenca boolean,
+    presenca BOOLEAN NOT NULL DEFAULT 0,
     
     foreign key (id_aluno) references usuarios(id) on delete cascade,
     foreign key (id_turma) references turmas(id) on delete cascade,
-    foreign key (id_professor) references usuarios(id) on delete cascade
+    foreign key (id_professor) references usuarios(id) on delete cascade,
+
+    UNIQUE KEY uniq_presenca (id_aluno, id_turma, data);
 );
 
 CREATE TABLE nota (
