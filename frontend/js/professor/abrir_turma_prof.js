@@ -43,10 +43,6 @@ if (html) {
                 <div class="tri3_media"></div>
             </div>
         </div>
-        <div id="historico_chamada">
-            <h2>Histórico de Chamada</h2>
-            <div id="historico_tudo></div>
-        </div>
     `
 }
 
